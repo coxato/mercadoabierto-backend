@@ -1,0 +1,36 @@
+{
+  "name": "mercadoabierto-backend",
+  "version": "1.0.0",
+  "description": "backend for a 'mercadolibre' clone called 'mercadoabierto'",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "Carlos Martinez",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "module-alias": "^2.2.2",
+    "mysql": "^2.18.1",
+    "nanoid": "^3.1.19",
+    "request": "^2.88.2"
+  },
+  "_moduleAliases": {
+    "@store": "store/",
+    "@network": "network/",
+    "@utils": "utils/",
+    "@config": "config.js"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6",
+    "supertest": "^6.0.1"
+  }
+}
