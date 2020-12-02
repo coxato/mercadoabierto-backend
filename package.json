@@ -9,7 +9,7 @@
     "test": "jest"
   },
   "keywords": [],
-  "author": "Carlos Martinez",
+  "author": "Carlos Martínez",
   "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -23,6 +23,7 @@
     "request": "^2.88.2"
   },
   "_moduleAliases": {
+    "@auth": "auth/",
     "@store": "store/",
     "@network": "network/",
     "@utils": "utils/",
