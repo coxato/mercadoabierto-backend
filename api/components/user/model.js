@@ -10,7 +10,7 @@ const User = (userData) => {
         username,
         email,
         photo_url: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
-        id: nanoid()
+        id_user: nanoid()
     }
 }
 
