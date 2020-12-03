@@ -1,6 +1,5 @@
 const { User } = require("./model");
 const err = require("@utils/error");
-const { checkProps } = require("@utils/checkObjProps");
 const auth = require("../auth");
 const TABLE = 'user';
 
@@ -13,14 +12,6 @@ function userController(injectedStore) {
 
 
     async function createUser(body) {
-        // check body props
-        const propsToValidate = ['username', 'email', 'first_name', 'last_name', 'password'];
-        if(!checkProps(false, body, propsToValidate)) throw err('the body is missing values', 400);
-
-        // check password length, email and username
-
-        if(body.password.length < 8) throw err('password must have 8 characters', 400);
-
         const emailTaken = await store.query(TABLE, { email: body.email });
         if(emailTaken) throw err(`email ${body.email} is already in use`, 400);
 

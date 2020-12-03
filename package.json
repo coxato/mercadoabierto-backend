@@ -15,6 +15,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "module-alias": "^2.2.2",
