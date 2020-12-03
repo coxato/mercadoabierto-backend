@@ -1,3 +1,7 @@
+/**
+ * desired schemas for req.body
+ */
+
 const Joi = require("joi");
 
 const userSchema = Joi.object({

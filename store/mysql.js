@@ -62,9 +62,14 @@ async function query(table, query, join = null, toArray = false){
     let queryJoin = '';
 
     if(join){
-        const key = Object.keys(join)[0];
-        const value = join[key];
-        queryJoin = `JOIN ${key} ON ${table}.${value} = ${key}.id`;
+        if(typeof join === "object"){
+            const key = Object.keys(join)[0];
+            const value = join[key];
+            queryJoin = `JOIN ${key} ON ${table}.${value} = ${key}.id`;
+        }
+        else if(typeof join === "string"){
+            queryJoin = join;
+        }
     }
 
     const q = `SELECT * FROM ${table} ${queryJoin} WHERE ${table}.?`;

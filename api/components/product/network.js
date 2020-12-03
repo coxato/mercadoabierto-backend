@@ -1,23 +1,22 @@
 const router = require("express").Router();
 const response = require("@network/response");
 const controller = require('./index');
-const { userSchema } = require("./schemas");
 // middlewares
 const checkBodySchema = require("@network/schemaValidator");
 
 // routes
-router.get('/', getAllUsers);
-router.post('/', checkBodySchema(userSchema), createUser);
+router.get('/all', getAllProducts);
+router.get('/:id', getProductById);
 
 // routes handlers
-function getAllUsers(req, res, next) {
-    controller.getAllUsers()
+function getAllProducts(req, res, next) {
+    controller.getAllProducts()
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }
 
-function createUser(req, res, next) {
-    controller.createUser(req.body)
+function getProductById(req, res, next) {
+    controller.getProductById(req.params.id)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }

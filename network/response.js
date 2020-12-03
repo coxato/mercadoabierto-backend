@@ -1,4 +1,4 @@
-function success(res, status = 200, dataOrMessage = 'success') {
+function success(res, status = 200, dataOrMessage = '') {
     res.status(status).send({
         status,
         error: false,
