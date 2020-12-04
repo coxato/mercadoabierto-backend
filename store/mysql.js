@@ -15,31 +15,32 @@ let asyncDB;
 function handleConnection() {
     connection = mysql.createConnection(dbConfig);
 
-    connection.connect( err => {
-        if(err){
-            console.error('[db error]', err);
-            // try to connect again
-            setTimeout( handleConnection, 2000);
-        }else{
-            console.log('mysql db connected');
-            asyncDB = asyncMysql(connection);
-        }
-    })
-
-    connection.on('error', err => {
-        console.error('[de error]', err);
-        if(err.code === 'PROTOCOL CONNECTION LOST'){
-            // try again if is network error
-            handleConnection();
-        }
-        else{
-            throw err;
-        }
+    return new Promise((resolve, reject) => {
+        connection.connect( err => {
+            if(err){
+                console.error('[db error]', err);
+                // try to connect again
+                setTimeout( handleConnection, 2000);
+            }else{
+                console.log('mysql db connected');
+                asyncDB = asyncMysql(connection);
+                resolve();
+            }
+        })
+    
+        connection.on('error', err => {
+            console.error('[de error]', err);
+            if(err.code === 'PROTOCOL CONNECTION LOST'){
+                // try again if is network error
+                handleConnection();
+            }
+            else{
+                throw err;
+            }
+        });
     })
 }
 
-
-handleConnection();
 
 // ===== crud functions =====
 
@@ -109,5 +110,6 @@ module.exports = {
     query,
     insert,
     update,
-    remove
+    remove,
+    handleConnection
 }
