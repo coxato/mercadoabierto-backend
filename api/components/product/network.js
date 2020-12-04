@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const response = require("@network/response");
+const response = require("../../../network/response");
 const controller = require('./index');
 // middlewares
-const checkBodySchema = require("@network/schemaValidator");
+const checkBodySchema = require("../../../network/schemaValidator");
 
 // routes
 router.get('/all', getAllProducts);

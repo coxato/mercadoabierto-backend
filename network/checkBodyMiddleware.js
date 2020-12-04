@@ -1,5 +1,5 @@
-const { checkProps } = require("@utils/checkObjProps");
-const err = require("@utils/error");
+const { checkProps } = require("../utils/checkObjProps");
+const err = require("../utils/error");
 
 function checkReqBody(propsToCheck = []) {
     return function checking(req, res, next){

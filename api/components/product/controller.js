@@ -1,4 +1,4 @@
-const err = require("@utils/error");
+const err = require("../../../utils/error");
 const TABLE = 'product';
 
 function productController(injectedStore) {
@@ -6,7 +6,7 @@ function productController(injectedStore) {
     // set store
     let store;
     if(injectedStore) store = injectedStore;
-    else store = require("@store/dummyDB");
+    else store = require("../../../store/dummyDB");
 
     async function getAllProducts() {
         const products = await store.list(TABLE);

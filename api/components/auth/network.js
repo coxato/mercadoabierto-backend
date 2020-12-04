@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const response = require("@network/response");
+const response = require("../../../network/response");
 const controller = require('./index');
 
 // routes

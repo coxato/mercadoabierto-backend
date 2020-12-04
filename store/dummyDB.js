@@ -1,4 +1,4 @@
-const err = require("@utils/error");
+const err = require("../utils/error");
 
 const db = {
     'user': [

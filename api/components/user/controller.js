@@ -1,5 +1,5 @@
 const { User } = require("./model");
-const err = require("@utils/error");
+const err = require("../../../utils/error");
 const auth = require("../auth");
 const TABLE = 'user';
 
@@ -8,7 +8,7 @@ function userController(injectedStore) {
     // set store
     let store;
     if(injectedStore) store = injectedStore;
-    else store = require("@store/dummyDB");
+    else store = require("../../../store/dummyDB");
 
 
     async function createUser(body) {
@@ -34,10 +34,19 @@ function userController(injectedStore) {
         return users;
     }
 
+    // username or email is avaliable
+    async function isAvaliable(searchBy, valueToSearch) {
+        if(searchBy !== 'email' && searchBy !== 'username') throw err('searchBy invalid query', 400);
+
+        const userExist = await store.query(TABLE, {[searchBy]: valueToSearch});
+        return userExist ? false : true;
+    }
+
     
     return {
         getAllUsers,
-        createUser
+        createUser,
+        isAvaliable
     }
     
 }

@@ -1,5 +1,5 @@
-const err = require("@utils/error");
-const auth = require("@auth");
+const err = require("../../../utils/error");
+const auth = require("../../../auth");
 const TABLE = 'auth';
 
 function authController(injectedStore) {
@@ -7,7 +7,7 @@ function authController(injectedStore) {
     // set store
     let store;
     if(injectedStore) store = injectedStore;
-    else store = require("@store/dummyDB");
+    else store = require("../../../store/dummyDB");
 
 
     async function createUserCredentials(userData, password){
