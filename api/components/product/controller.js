@@ -1,4 +1,5 @@
 const err = require("../../../utils/error");
+const { Product, ProductMedia } = require("./models");
 const TABLE = 'product';
 
 function productController(injectedStore) {
@@ -7,6 +8,8 @@ function productController(injectedStore) {
     let store;
     if(injectedStore) store = injectedStore;
     else store = require("../../../store/dummyDB");
+
+    // ========== Read =========
 
     async function getAllProducts() {
         const products = await store.list(TABLE);
@@ -30,10 +33,19 @@ function productController(injectedStore) {
         };
     }
 
-    
+    // ========== Create ==========
+
+    async function saveProductMedia(body) {
+        const productMedia = ProductMedia(body);
+        
+        await store.insert(TABLE+'_media', productMedia);
+        return 'product media saved';
+    }
+
     return {
         getAllProducts,
-        getProductById
+        getProductById,
+        saveProductMedia
     }
     
 }

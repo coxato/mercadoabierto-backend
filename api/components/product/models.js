@@ -14,6 +14,18 @@ const Product = (body) => {
     }
 }
 
+// yep, very simple but just for a little more security, just save the correct props
+const ProductMedia = body => {
+    const { id_album, photo_fullname, photo_url } = body;
+
+    return {
+        id_album,
+        photo_fullname,
+        photo_url
+    }
+}
+
 module.exports = {
-    Product
+    Product,
+    ProductMedia
 }

@@ -34,8 +34,9 @@ function authController(injectedStore) {
             const correctPassword = await auth.compareCrypt(password, user.password);
 
             if(correctPassword){
-                // create token payload without the password
+                // create token payload without the password and money
                 delete user.password;
+                delete user.money;
 
                 const token = auth.jwtSing({ ...user });
 

@@ -1,4 +1,3 @@
-// require('module-alias/register'); // path aliases
 const express = require("express");
 const cors = require("cors");
 const config = require("../config");
