@@ -33,6 +33,11 @@ function productController(injectedStore) {
         };
     }
 
+    async function getProductMedia(id_album) {
+        const media = store.query(TABLE+'_media', { id_album }, null, true);
+        return media;
+    }
+
     // ========== Create ==========
 
     async function saveProductMedia(body) {
@@ -42,10 +47,17 @@ function productController(injectedStore) {
         return 'product media saved';
     }
 
+    async function removeProductMedia(photo_fullname) {
+        await store.removeBy(TABLE+'_media', { photo_fullname });
+        return 'product media removed';
+    }
+
     return {
         getAllProducts,
         getProductById,
-        saveProductMedia
+        getProductMedia,
+        saveProductMedia,
+        removeProductMedia
     }
     
 }

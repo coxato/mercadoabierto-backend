@@ -101,6 +101,11 @@ async function remove(table, id){
     return await asyncDB.query(q);
 }
 
+async function removeBy(table, query){
+    const q = `DELETE FROM ${table} WHERE ?`;
+    return await asyncDB.query(q, query);
+}
+
 
 
 module.exports = {
@@ -111,5 +116,6 @@ module.exports = {
     insert,
     update,
     remove,
+    removeBy,
     handleConnection
 }
