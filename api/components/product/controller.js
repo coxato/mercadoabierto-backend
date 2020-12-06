@@ -33,19 +33,32 @@ function productController(injectedStore) {
         };
     }
 
+    async function getProductsByCategory(category, sortBy = null) {
+        const products = await store.query(TABLE, { category }, null, true);
+        return products;
+    }
+ 
+    
     async function getProductMedia(id_album) {
-        const media = store.query(TABLE+'_media', { id_album }, null, true);
+        const media = await store.query(TABLE+'_media', { id_album }, null, true);
         return media;
     }
 
     // ========== Create ==========
 
-    async function saveProductMedia(body) {
-        const productMedia = ProductMedia(body);
-        
-        await store.insert(TABLE+'_media', productMedia);
+    async function saveProductMedia(body, id_user) {
+        const media = ProductMedia(body, id_user);
+
+        await store.insert(TABLE+'_media', media);
         return 'product media saved';
     }
+
+    async function saveProduct(body, id_user) {
+        const product = Product(body, id_user);
+        await store.insert(TABLE, product);
+    }
+
+    // ========= delete ==========
 
     async function removeProductMedia(photo_fullname) {
         await store.removeBy(TABLE+'_media', { photo_fullname });
@@ -55,8 +68,12 @@ function productController(injectedStore) {
     return {
         getAllProducts,
         getProductById,
+        getProductsByCategory,
         getProductMedia,
+
         saveProductMedia,
+        saveProduct,
+
         removeProductMedia
     }
     

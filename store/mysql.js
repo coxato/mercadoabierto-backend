@@ -59,6 +59,11 @@ async function getBy(table, property, compareData){
     return await asyncDB.query(q, compareData);
 }
 
+async function getWithLimit(table, columName, query, limit) {
+    const q = `SELECT ${columName} FROM ${table} WHERE ? LIMIT ${limit}`;
+    return await asyncDB.query(q, query);
+}
+
 async function query(table, query, join = null, toArray = false){
     let queryJoin = '';
 
@@ -112,6 +117,7 @@ module.exports = {
     list,
     get,
     getBy,
+    getWithLimit,
     query,
     insert,
     update,

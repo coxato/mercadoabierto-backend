@@ -1,27 +1,19 @@
 const { nanoid } = require("nanoid");
 
-const Product = (body) => {
-    const { first_name, last_name, username, email } = body;
+// data is prevously validate by "joi" library, check ./schemas.js
 
+const Product = (body, id_user) => {
     return {
-        photo_url: `https://www.gravatar.com/avatar/${md5(email)}?d=identicon`,
-        id_user: nanoid(),
-        money: 1000.00,
-        first_name,
-        last_name,
-        username: username.trim(),
-        email: email.trim(),
+        ...body,
+        id_user,
+        id_product: nanoid()
     }
 }
 
-// yep, very simple but just for a little more security, just save the correct props
-const ProductMedia = body => {
-    const { id_album, photo_fullname, photo_url } = body;
-
+const ProductMedia = (body, id_user) => {
     return {
-        id_album,
-        photo_fullname,
-        photo_url
+        ...body,
+        id_user
     }
 }
 

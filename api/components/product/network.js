@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const response = require("../../../network/response");
 const controller = require('./index');
-const { photoSchema } = require("./schemas");
+const { photoSchema, productSchema } = require("./schemas");
 // middlewares
 const checkBodySchema = require("../../../network/schemaValidator");
 const secureAction = require("./secure");
@@ -11,11 +11,15 @@ router.get('/all', getAllProducts);
 router.get('/:id', getProductById);
 router.get('/media/:id_album', getProductMedia);
 
+router.post('/', secureAction('create'), checkBodySchema(productSchema), saveProduct);
 router.post('/media', secureAction('media'), checkBodySchema(photoSchema), saveMedia);
 
 router.delete('/media/:photo_fullname', secureAction('media'), removeMedia);
 
 // routes handlers
+
+// ===== GET ===== 
+
 function getAllProducts(req, res, next) {
     controller.getAllProducts()
         .then( data => response.success(res, 200, data) )
@@ -34,11 +38,23 @@ function getProductMedia(req, res, next) {
         .catch(next);
 }
 
-function saveMedia(req, res, next) {
-    controller.saveProductMedia(req.body)
+// ===== POST =====
+
+function saveProduct(req, res, next) {
+    // req.user.id_user becomes from secure middleware
+    controller.saveProduct(req.body, req.user.id_user)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }
+
+function saveMedia(req, res, next) {
+    // req.user.id_user becomes from secure middleware
+    controller.saveProductMedia(req.body, req.user.id_user)
+        .then( data => response.success(res, 200, data) )
+        .catch(next);
+}
+
+// ===== DELETE =====
 
 function removeMedia(req, res, next) {
     controller.removeProductMedia(req.params.photo_fullname)
