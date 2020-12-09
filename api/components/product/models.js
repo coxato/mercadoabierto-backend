@@ -6,7 +6,9 @@ const Product = (body, id_user) => {
     return {
         ...body,
         id_user,
-        id_product: nanoid()
+        id_product: nanoid(),
+        avaliable: 1, // true 0 -> false
+        date: new Date().toLocaleDateString().split('/').reverse().join('-'),
     }
 }
 

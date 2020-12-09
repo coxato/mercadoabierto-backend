@@ -11,8 +11,9 @@ const productSchema = Joi.object({
     description: Joi.string().min(10).max(2000).required(),
     category: Joi.string().valid(...categories).required(),
     quantity: Joi.number().min(1).max(500).required(),
-    price: Joi.number().positive().required(),
-    cover: Joi.string().required()
+    price: Joi.number().positive().max(10000).required(),
+    cover: Joi.string().required(),
+    new: Joi.number().valid(0, 1).required()
 });
 
 const photoSchema = Joi.object({

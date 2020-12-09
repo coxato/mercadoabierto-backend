@@ -42,7 +42,7 @@ function getProductMedia(req, res, next) {
 
 function saveProduct(req, res, next) {
     // req.user.id_user becomes from secure middleware
-    controller.saveProduct(req.body, req.user.id_user)
+    controller.saveProduct(req.body, req.user.id_user, req.user.username)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }

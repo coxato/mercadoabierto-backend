@@ -53,9 +53,13 @@ function productController(injectedStore) {
         return 'product media saved';
     }
 
-    async function saveProduct(body, id_user) {
+    async function saveProduct(body, id_user, username) {
         const product = Product(body, id_user);
         await store.insert(TABLE, product);
+        return {
+            ...product, 
+            username
+        };
     }
 
     // ========= delete ==========
