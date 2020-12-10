@@ -18,7 +18,13 @@ function productController(injectedStore) {
 
     async function getProductById(id) {
         const product = await store.query(TABLE, { id_product: id });
-        if(!product) throw err("the product with id " + id + " does not exist", 404);
+        // if(!product) throw err("the product with id " + id + " does not exist", 404);
+        if(!product){
+            return {
+                productData: null,
+                photos: null
+            };
+        }
 
         const photos = await store.query(
             TABLE+'_media', 
