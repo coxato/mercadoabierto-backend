@@ -5,7 +5,8 @@
  */
 
 module.exports = {
-    
+    dev: true,
+
     api: {
         PORT: process.env.PORT || 5000,
         SECRET: process.env.SECRET || 'your secret string'

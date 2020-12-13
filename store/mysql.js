@@ -2,11 +2,13 @@ const mysql = require("mysql");
 const config = require("../config");
 const asyncMysql = require("./asyncMysql");
 
+const dbENV = config.dev ? config.mysqlOffline : config.mysql;
+
 const dbConfig = {
-    host: config.mysql.DB_HOST,
-    user: config.mysql.DB_USER,
-    password: config.mysql.DB_PASSWORD,
-    database: config.mysql.DB_NAME
+    host: dbENV.DB_HOST,
+    user: dbENV.DB_USER,
+    password: dbENV.DB_PASSWORD,
+    database: dbENV.DB_NAME
 }
 
 let connection;
@@ -59,6 +61,16 @@ async function getBy(table, property, compareData){
     return await asyncDB.query(q, compareData);
 }
 
+async function getValuesFrom(table, query, values = [], toArray = false){
+    const _values = `${values.join()}`;
+    const q = `SELECT ${_values} FROM ${table} WHERE ?`;
+    const results = await asyncDB.query(q, query);
+    
+    if(results.length <= 1 && !toArray) return results[0]
+    
+    return results;
+}
+
 async function getWithLimit(table, columName, query, limit) {
     const q = `SELECT ${columName} FROM ${table} WHERE ? LIMIT ${limit}`;
     return await asyncDB.query(q, query);
@@ -71,7 +83,7 @@ async function query(table, query, join = null, toArray = false){
         if(typeof join === "object"){
             const key = Object.keys(join)[0];
             const value = join[key];
-            queryJoin = `JOIN ${key} ON ${table}.${value} = ${key}.id`;
+            queryJoin = `JOIN ${key} ON ${table}.${value} = ${key}.id_${key}`;
         }
         else if(typeof join === "string"){
             queryJoin = join;
@@ -117,6 +129,7 @@ module.exports = {
     list,
     get,
     getBy,
+    getValuesFrom,
     getWithLimit,
     query,
     insert,

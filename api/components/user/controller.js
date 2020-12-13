@@ -34,6 +34,19 @@ function userController(injectedStore) {
         return users;
     }
 
+
+    async function getUserById(id_user) {
+        const user = await store.getValuesFrom(
+            TABLE, 
+            { id_user }, 
+            ['id_user', 'username', 'photo_url', 'first_name']
+        );
+
+        if(!user) return null;
+
+        return user;
+    }
+
     // username or email is avaliable
     async function isAvaliable(searchBy, valueToSearch) {
         if(searchBy !== 'email' && searchBy !== 'username') throw err('searchBy invalid query', 400);
@@ -45,6 +58,7 @@ function userController(injectedStore) {
     
     return {
         getAllUsers,
+        getUserById,
         createUser,
         isAvaliable
     }

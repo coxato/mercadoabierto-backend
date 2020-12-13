@@ -33,9 +33,16 @@ function productController(injectedStore) {
             true
         );
 
+        const sellerData = await store.getValuesFrom(
+            'user',
+            {id_user: product.id_user},
+            ['id_user', 'username', 'photo_url']    
+        )
+
         return {
             productData: product,
-            photos
+            photos,
+            sellerData
         };
     }
 
