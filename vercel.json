@@ -4,7 +4,7 @@
     "builds": [
         {
             "src": "/api/index.js",
-            "use": "@now/node"
+            "use": "@vercel/node"
         }
     ],
 
@@ -19,6 +19,10 @@
         },
         {
             "src": "/api/products(.*)",
+            "dest": "/api/index.js"
+        },
+        {
+            "src": "/api/cart(.*)",
             "dest": "/api/index.js"
         }
     ]

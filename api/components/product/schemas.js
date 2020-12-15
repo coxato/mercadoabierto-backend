@@ -10,7 +10,7 @@ const productSchema = Joi.object({
     title: Joi.string().min(10).max(70).required(),
     description: Joi.string().min(10).max(2000).required(),
     category: Joi.string().valid(...categories).required(),
-    quantity: Joi.number().min(1).max(500).required(),
+    quantity: Joi.number().min(1).max(200).required(),
     price: Joi.number().positive().max(10000).required(),
     cover: Joi.string().required(),
     new: Joi.number().valid(0, 1).required()

@@ -44,22 +44,21 @@ function handleConnection() {
 }
 
 
+// mini utils
+const concatenateQueries = (queryObj) => {
+    const keys = Object.keys(queryObj);
+    let q = '';
+
+    for (let i = 0; i < keys.length; i++) {
+        q += ` ${keys[i]}='${queryObj[keys[i]]}'`;
+        
+        if( (i+1) < keys.length ) q+= ' AND'
+    }
+
+    return q;
+} 
+
 // ===== crud functions =====
-
-async function list(table){
-    const q = `SELECT * FROM ${table}`;
-    return await asyncDB.query(q);
-} 
-
-async function get(table, id){
-    const q = `SELECT * FROM ${table} WHERE id = ${id}`;
-    return await asyncDB.query(q);
-} 
-
-async function getBy(table, property, compareData){
-    const q = `SELECT * FROM ${table} WHERE ${property}=?`;
-    return await asyncDB.query(q, compareData);
-}
 
 async function getValuesFrom(table, query, values = [], toArray = false){
     const _values = `${values.join()}`;
@@ -103,14 +102,34 @@ async function query(table, query, join = null, toArray = false){
     } catch (err) { throw err }
 }
 
+
+async function queryMultiple(table, queryObj, toArray = false) {
+    let q = `SELECT * FROM ${table} WHERE`;
+    q += concatenateQueries(queryObj);
+
+    const data = await asyncDB.query(q);
+    
+    if(data.length <= 1 && !toArray) return data[0];
+    // return data array
+    return data;
+}
+
+
 async function insert(table, data){
     const q = `INSERT INTO ${table} SET ?`;
     return await asyncDB.query(q, data);
 }
 
 async function update(table, id, newData){
-    const q = `UPDATE ${table} SET ? WHERE id=?`;
+    const q = `UPDATE ${table} SET ? WHERE id_${table}=?`;
     return await asyncDB.query(q, [newData, id]);
+}
+
+async function updateBy(table, queryObj, newData){
+    let q = `UPDATE ${table} SET ? WHERE`;
+    q += concatenateQueries(queryObj);
+
+    return await asyncDB.query(q, newData);
 }
 
 async function remove(table, id){
@@ -126,14 +145,13 @@ async function removeBy(table, query){
 
 
 module.exports = {
-    list,
-    get,
-    getBy,
     getValuesFrom,
     getWithLimit,
     query,
+    queryMultiple,
     insert,
     update,
+    updateBy,
     remove,
     removeBy,
     handleConnection

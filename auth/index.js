@@ -41,10 +41,10 @@ function decodeHeader(req){
 
 const check = {
     // check token owner
-    isOwner: function(req, ownerId){
+    isOwner: function(req, ownerId, idProp = 'id_user'){
         const decoded = decodeHeader(req);
         // check if the token correspond to owner
-        if(decoded.id === ownerId){
+        if(decoded[idProp] === ownerId){
             return; 
         }
 
