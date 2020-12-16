@@ -10,55 +10,101 @@ function cartController(injectedStore) {
 
     // ========== Read =========
     async function getUserItems(id_user) {
-        const items = await store.query(
+        // SELECT cart.*, cover, price, title FROM cart JOIN product ON cart.id_product=product.id_product WHERE cart.id_user='someIdUser'
+        const items = await store.queryWithAdvanceJoin(
             TABLE, // cart
+            'cart.*, title, price, cover', // SELECT
             { id_user }, // query
-            { 'product': 'id_product' }, // join 
-            true // to array true
+            { 'product': 'id_product' } // JOIN 
         );
 
         if(!items) return null;
 
         return items;
     }
-    
+
+    async function _getItem({ id_user, id_product }) {
+        return await store.queryMultiple(TABLE, { id_user, id_product });
+    }
+
 
     // ========== Create ==========
     async function addToCart(body) {
-        const { id_user, id_product, quantity } = body;
+        let { id_user, id_product, quantity } = body;
+        quantity = parseInt(quantity);
 
         // do not allow auto buy
-        const product = await store.query('product', { id_product });
+        const product = await store.getValuesFrom(
+            'product',
+            {id_product},
+            ['id_product', 'price', 'cover', 'title']
+        );
         if(product.id_user === id_user){
             return null;
         }
 
-        const item = await store.queryMultiple(TABLE, { id_user, id_product });
+        const item = await _getItem(body);
 
         // add to cart
         if(!item){
             await store.insert(TABLE, body);
-            return true;
+        }
+        // sum quantity if exists
+        else{
+            await store.updateBy(
+                TABLE, 
+                { id_user, id_product },
+                { quantity: item.quantity + quantity }    
+            )
         }
 
-        // add quantity if exists
-        await store.updateBy(
-            TABLE, 
-            { id_user, id_product },
-            { quantity: item.quantity + quantity }    
-        )
+        // return basic product data
+        return product;
+    }
 
+    // ========= update ==========
+
+    async function updateQty(body) {
+        const { id_user, id_product, quantity } = body;
+
+        const item = await _getItem(body);
+
+        if(item){
+            const itemQty = item.quantity;
+            let qtyToUpdate = itemQty + parseInt(quantity);
+
+            if((itemQty <= 0) || (qtyToUpdate <= 0)){
+                return await deleteItem(body);
+            }
+
+            await store.updateBy(
+                TABLE, 
+                { id_user, id_product },
+                { quantity: qtyToUpdate }   
+            );
+
+            return true;
+            
+        }
+        // item does not exist
+        return null;
+    }
+
+    // ========= delete ==========
+    async function deleteItem(body) {
+        const { id_user, id_product } = body;
+
+        await store.removeByMultiple(TABLE, { id_user, id_product });
+        
         return true;
     }
     
 
-    // ========= delete ==========
-
-    
-
     return {
         getUserItems,
-        addToCart
+        addToCart,
+        updateQty,
+        deleteItem,
     }
     
 }

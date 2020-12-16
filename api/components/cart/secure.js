@@ -10,7 +10,7 @@ function secureCartAction(action) {
                 next();
                 break;
 
-            case 'add-to-cart':
+            case 'is-owner':
                 check.isOwner(req, req.body.id_user);
                 next();
                 break;

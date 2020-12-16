@@ -31,8 +31,8 @@ function handleConnection() {
         })
     
         connection.on('error', err => {
-            console.error('[de error]', err);
-            if(err.code === 'PROTOCOL CONNECTION LOST'){
+            console.error('[db error]', err);
+            if(err.code === 'PROTOCOL_CONNECTION_LOST'){
                 // try again if is network error
                 handleConnection();
             }
@@ -45,7 +45,7 @@ function handleConnection() {
 
 
 // mini utils
-const concatenateQueries = (queryObj) => {
+const _concatenateQueries = (queryObj) => {
     const keys = Object.keys(queryObj);
     let q = '';
 
@@ -58,7 +58,29 @@ const concatenateQueries = (queryObj) => {
     return q;
 } 
 
+const _makeJoinStr = (table, joinObj) => {
+    let queryJoin = '';
+
+    if(joinObj){
+        if(typeof joinObj === "object"){
+            const key = Object.keys(joinObj)[0];
+            const value = joinObj[key];
+            queryJoin = `JOIN ${key} ON ${table}.${value} = ${key}.id_${key}`;
+        }
+        else if(typeof joinObj === "string"){
+            queryJoin = joinObj;
+        }
+    }
+
+    return queryJoin;
+}
+
 // ===== crud functions =====
+
+async function list(table) {
+    const q = `SELECT * FROM ${table}`;
+    return await asyncDB.query(q);
+}
 
 async function getValuesFrom(table, query, values = [], toArray = false){
     const _values = `${values.join()}`;
@@ -76,18 +98,7 @@ async function getWithLimit(table, columName, query, limit) {
 }
 
 async function query(table, query, join = null, toArray = false){
-    let queryJoin = '';
-
-    if(join){
-        if(typeof join === "object"){
-            const key = Object.keys(join)[0];
-            const value = join[key];
-            queryJoin = `JOIN ${key} ON ${table}.${value} = ${key}.id_${key}`;
-        }
-        else if(typeof join === "string"){
-            queryJoin = join;
-        }
-    }
+    const queryJoin = _makeJoinStr(table, join);
 
     const q = `SELECT * FROM ${table} ${queryJoin} WHERE ${table}.?`;
     
@@ -105,12 +116,24 @@ async function query(table, query, join = null, toArray = false){
 
 async function queryMultiple(table, queryObj, toArray = false) {
     let q = `SELECT * FROM ${table} WHERE`;
-    q += concatenateQueries(queryObj);
+    q += _concatenateQueries(queryObj);
 
     const data = await asyncDB.query(q);
     
     if(data.length <= 1 && !toArray) return data[0];
     // return data array
+    return data;
+}
+
+async function queryWithAdvanceJoin(table, selectRows, query, join, toArray = true) {
+    const joinStr = _makeJoinStr(table, join);
+    
+    const q = `SELECT ${selectRows} FROM ${table} ${joinStr} WHERE ${table}.?`;
+    
+    const data = await asyncDB.query(q, query);
+
+    if(data.length <= 1 && !toArray) return data[0];
+
     return data;
 }
 
@@ -127,7 +150,7 @@ async function update(table, id, newData){
 
 async function updateBy(table, queryObj, newData){
     let q = `UPDATE ${table} SET ? WHERE`;
-    q += concatenateQueries(queryObj);
+    q += _concatenateQueries(queryObj);
 
     return await asyncDB.query(q, newData);
 }
@@ -142,17 +165,27 @@ async function removeBy(table, query){
     return await asyncDB.query(q, query);
 }
 
+async function removeByMultiple(table, queryObj){
+    let q = `DELETE FROM ${table} WHERE`;
+    q+= _concatenateQueries(queryObj);
+
+    return await asyncDB.query(q);
+}
+
 
 
 module.exports = {
+    list,
     getValuesFrom,
     getWithLimit,
     query,
     queryMultiple,
+    queryWithAdvanceJoin,
     insert,
     update,
     updateBy,
     remove,
     removeBy,
+    removeByMultiple,
     handleConnection
 }
