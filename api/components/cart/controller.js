@@ -1,5 +1,6 @@
 const err = require("../../../utils/error");
 const TABLE = 'cart';
+const TABLE_PRODUCT = 'product';
 
 function cartController(injectedStore) {
     
@@ -15,7 +16,7 @@ function cartController(injectedStore) {
             TABLE, // cart
             'cart.*, title, price, cover', // SELECT
             { id_user }, // query
-            { 'product': 'id_product' } // JOIN 
+            { [TABLE_PRODUCT]: 'id_product' } // JOIN 
         );
 
         if(!items) return null;
@@ -35,7 +36,7 @@ function cartController(injectedStore) {
 
         // do not allow auto buy
         const product = await store.getValuesFrom(
-            'product',
+            TABLE_PRODUCT,
             {id_product},
             ['id_product', 'price', 'cover', 'title']
         );

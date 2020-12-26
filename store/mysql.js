@@ -77,6 +77,7 @@ const _makeJoinStr = (table, joinObj) => {
 
 // ===== crud functions =====
 
+// ===== get =====
 async function list(table) {
     const q = `SELECT * FROM ${table}`;
     return await asyncDB.query(q);
@@ -137,11 +138,14 @@ async function queryWithAdvanceJoin(table, selectRows, query, join, toArray = tr
     return data;
 }
 
+// ===== insert =====
 
 async function insert(table, data){
     const q = `INSERT INTO ${table} SET ?`;
     return await asyncDB.query(q, data);
 }
+
+// ===== update =====
 
 async function update(table, id, newData){
     const q = `UPDATE ${table} SET ? WHERE id_${table}=?`;
@@ -154,6 +158,8 @@ async function updateBy(table, queryObj, newData){
 
     return await asyncDB.query(q, newData);
 }
+
+// ===== delete =====
 
 async function remove(table, id){
     const q = `DELETE FROM ${table} WHERE id=${id}`;

@@ -17,7 +17,8 @@ useRoutes(app);
 app.use(errorMiddlewareRoute);
 
 async function startServer() {
-    await handleConnection();
+    // wait for db connection
+    await handleConnection(); 
     
     app.listen(config.api.PORT, () => {
         console.log("server running on port " + config.api.PORT);
