@@ -10,6 +10,11 @@ function secureUserAction(action) {
                 next();
                 break;
 
+            case 'get-money':
+                check.isOwner(req, req.params.id);
+                next();
+                break;
+
             default:
                 err(`action: ${action} not valid`);
         }

@@ -24,7 +24,7 @@ function cartController(injectedStore) {
         return items;
     }
 
-    async function _getItem({ id_user, id_product }) {
+    async function _getCartItem({ id_user, id_product }) {
         return await store.queryMultiple(TABLE, { id_user, id_product });
     }
 
@@ -34,17 +34,25 @@ function cartController(injectedStore) {
         let { id_user, id_product, quantity } = body;
         quantity = parseInt(quantity);
 
-        // do not allow auto buy
+        const user = await store.query("user", { id_user });
+
         const product = await store.getValuesFrom(
             TABLE_PRODUCT,
             {id_product},
             ['id_product', 'price', 'cover', 'title']
         );
+
+        const item = await _getCartItem(body);
+
+        // do not allow auto buy
         if(product.id_user === id_user){
             return null;
         }
 
-        const item = await _getItem(body);
+        // do not add if not enough money
+        if(product.price * quantity > user.money){
+            return null;
+        }
 
         // add to cart
         if(!item){
@@ -68,7 +76,7 @@ function cartController(injectedStore) {
     async function updateQty(body) {
         const { id_user, id_product, quantity } = body;
 
-        const item = await _getItem(body);
+        const item = await _getCartItem(body);
 
         if(item){
             const itemQty = item.quantity;

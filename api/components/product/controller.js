@@ -75,6 +75,11 @@ function productController(injectedStore) {
         };
     }
 
+    // ================ update ==============
+    async function updateProduct(id_product, propsObj) {
+        return await store.update(TABLE, id_product, propsObj);
+    }
+
     // ========= delete ==========
 
     async function removeProductMedia(photo_fullname) {
@@ -90,6 +95,8 @@ function productController(injectedStore) {
 
         saveProductMedia,
         saveProduct,
+
+        updateProduct,
 
         removeProductMedia
     }

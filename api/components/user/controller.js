@@ -10,7 +10,9 @@ function userController(injectedStore) {
     if(injectedStore) store = injectedStore;
     else store = require("../../../store/dummyDB");
 
-
+    /*
+        ===== create =====
+    */
     async function createUser(body) {
         const emailTaken = await store.query(TABLE, { email: body.email });
         if(emailTaken) throw err(`email ${body.email} is already in use`, 400);
@@ -28,6 +30,9 @@ function userController(injectedStore) {
         return 'user created succesfully';
     }
 
+    /*
+        ===== read =====
+    */
 
     async function getAllUsers() {
         const users = await store.list(TABLE);
@@ -39,12 +44,22 @@ function userController(injectedStore) {
         const user = await store.getValuesFrom(
             TABLE, 
             { id_user }, 
-            ['id_user', 'username', 'photo_url', 'first_name']
+            ['id_user', 'username', 'photo_url', 'first_name', 'money']
         );
 
         if(!user) return null;
 
         return user;
+    }
+
+    async function getUserMoney(id_user) {
+        const { money } = await store.getValuesFrom(
+            TABLE, 
+            { id_user }, 
+            ['money']
+        );
+
+        return money;
     }
 
     // username or email is avaliable
@@ -55,12 +70,22 @@ function userController(injectedStore) {
         return userExist ? false : true;
     }
 
+    /*
+        ===== update =====
+    */
+
+    async function updateUser(id_user, propsObj) {
+        return await store.update(TABLE, id_user, propsObj);
+    }
+
     
     return {
         getAllUsers,
         getUserById,
+        getUserMoney,
         createUser,
-        isAvaliable
+        isAvaliable,
+        updateUser
     }
     
 }

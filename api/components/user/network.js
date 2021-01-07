@@ -9,8 +9,9 @@ const secureAction = require("./secure");
 // routes
 router.get('/', getAllUsers);
 router.get('/logged-info', secureAction('get-info'), getUserLoggedInfo);
+router.get('/money/:id', secureAction('get-money'), getUserMoney);
 router.get('/check-avaliable/', checkAvaliable);
-router.get('/:id', getUserById);
+// router.get('/:id', getUserById);
 
 router.post('/', checkBodySchema(userSchema), createUser);
 
@@ -27,11 +28,17 @@ function getUserLoggedInfo(req, res, next) {
         .catch(next);
 }
 
-function getUserById(req, res, next) {
-    controller.getUserById(req.params.id)
+function getUserMoney(req, res, next) {
+    controller.getUserMoney(req.user.id_user)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }
+
+// function getUserById(req, res, next) {
+//     controller.getUserById(req.params.id)
+//         .then( data => response.success(res, 200, data) )
+//         .catch(next);
+// }
 
 function createUser(req, res, next) {
     controller.createUser(req.body)
