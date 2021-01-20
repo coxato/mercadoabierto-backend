@@ -4,12 +4,28 @@ const controller = require('./index');
 const { photoSchema, productSchema } = require("./schemas");
 // middlewares
 const checkBodySchema = require("../../../network/schemaValidator");
+const paginationMiddleware = require("../../../network/paginationMiddleware");
 const secureAction = require("./secure");
 
 // routes
 router.get('/all', getAllProducts);
+router.get(
+    '/category/:category',
+    (req, res, next) => {
+        const { category } = req.params;
+        // make a little verification for :category param
+        paginationMiddleware({
+            store: controller.store,
+            table: controller.TABLE,
+            where: category === 'all' ? null : { category }
+        })(req, res, next);
+    },
+    getProductsWithPagination
+);
+
 router.get('/:id', getProductById);
 router.get('/media/:id_album', getProductMedia);
+
 
 router.post('/', secureAction('create'), checkBodySchema(productSchema), saveProduct);
 router.post('/media', secureAction('media'), checkBodySchema(photoSchema), saveMedia);
@@ -36,6 +52,11 @@ function getProductMedia(req, res, next) {
     controller.getProductMedia(req.params.id_album)
         .then( data => response.success(res, 200, data) )
         .catch(next);
+}
+
+
+async function getProductsWithPagination(req, res, next) {
+    response.success(res, 200, req.paginationResults);
 }
 
 // ===== POST =====

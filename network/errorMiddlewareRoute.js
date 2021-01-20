@@ -1,6 +1,6 @@
 const response = require("./response");
 
-// express middleware error
+// express error middleware
 function errorMiddleware(err, req, res, next) {
     console.error('[error]', err);
 

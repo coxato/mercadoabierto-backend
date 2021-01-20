@@ -88,17 +88,21 @@ function productController(injectedStore) {
     }
 
     return {
+        // GET
         getAllProducts,
         getProductById,
         getProductsByCategory,
         getProductMedia,
-
+        // POST
         saveProductMedia,
         saveProduct,
-
+        // PUT
         updateProduct,
-
-        removeProductMedia
+        // DELETE
+        removeProductMedia,
+        // misc
+        store,
+        TABLE
     }
     
 }

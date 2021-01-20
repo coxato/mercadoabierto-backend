@@ -138,6 +138,36 @@ async function queryWithAdvanceJoin(table, selectRows, query, join, toArray = tr
     return data;
 }
 
+
+async function getCount(table, where = null) {
+    let q = `SELECT COUNT(id_${table}) AS dataCount FROM ${table}`;
+    let data;
+
+    if(where){
+        q += ' WHERE ?';
+        data = await asyncDB.query(q, where);
+    }
+    else data = await asyncDB.query(q); 
+
+    return data[0].dataCount;
+}
+
+
+async function getWithPagination({table, limit, orderBy, offset, order = 'ASC', where = null}) {
+    let q = `SELECT * FROM ${table}`; 
+    let q2 = ` ORDER BY ${orderBy} ${order} LIMIT ${limit} OFFSET ${offset}`;
+    let data;
+    
+
+    if(where){
+        q += ' WHERE ?' + q2;
+        data = await asyncDB.query(q, where);
+    }
+    else data = await asyncDB.query(q + q2); 
+
+    return data;
+}
+
 // ===== insert =====
 
 async function insert(table, data){
@@ -179,7 +209,6 @@ async function removeByMultiple(table, queryObj){
 }
 
 
-
 module.exports = {
     list,
     getValuesFrom,
@@ -187,6 +216,8 @@ module.exports = {
     query,
     queryMultiple,
     queryWithAdvanceJoin,
+    getCount,
+    getWithPagination,
     insert,
     update,
     updateBy,
