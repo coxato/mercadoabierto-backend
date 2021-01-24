@@ -10,16 +10,8 @@ const secureAction = require("./secure");
 // routes
 router.get('/all', getAllProducts);
 router.get(
-    '/category/:category',
-    (req, res, next) => {
-        const { category } = req.params;
-        // make a little verification for :category param
-        paginationMiddleware({
-            store: controller.store,
-            table: controller.TABLE,
-            where: category === 'all' ? null : { category }
-        })(req, res, next);
-    },
+    '/category/:category', 
+    handleProductPagination, 
     getProductsWithPagination
 );
 
@@ -54,9 +46,32 @@ function getProductMedia(req, res, next) {
         .catch(next);
 }
 
+// just handle the request obj
+function handleProductPagination(req, res, next) {
+    const { category } = req.params;
+    const { filter } = req.query;
+    const _new = !filter ? undefined : filter === 'new' ? 1 : 0;
+    // make a little verification for :category param
+    paginationMiddleware({
+        store: controller.store,
+        table: controller.TABLE,
+        where: category === 'all' ? 
+                null : 
+                { 
+                    category,
+                    // expect a number 
+                    ...( !isNaN(_new) && { new: _new }) 
+                }
+    })(req, res, next);
+}
 
-async function getProductsWithPagination(req, res, next) {
-    response.success(res, 200, req.paginationResults);
+function getProductsWithPagination(req, res) {
+    if(req.paginationResults){
+        response.success(res, 200, req.paginationResults)
+    }
+    else{
+        response.error(res, new Error("error getting products with pagination"))
+    }
 }
 
 // ===== POST =====

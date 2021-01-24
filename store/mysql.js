@@ -144,8 +144,8 @@ async function getCount(table, where = null) {
     let data;
 
     if(where){
-        q += ' WHERE ?';
-        data = await asyncDB.query(q, where);
+        q += ' WHERE ' + _concatenateQueries(where);
+        data = await asyncDB.query(q);
     }
     else data = await asyncDB.query(q); 
 
@@ -158,10 +158,9 @@ async function getWithPagination({table, limit, orderBy, offset, order = 'ASC', 
     let q2 = ` ORDER BY ${orderBy} ${order} LIMIT ${limit} OFFSET ${offset}`;
     let data;
     
-
     if(where){
-        q += ' WHERE ?' + q2;
-        data = await asyncDB.query(q, where);
+        q += ' WHERE ' + _concatenateQueries(where) + q2;
+        data = await asyncDB.query(q);
     }
     else data = await asyncDB.query(q + q2); 
 

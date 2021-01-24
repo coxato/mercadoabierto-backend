@@ -29,6 +29,8 @@ function paginationMiddleware({store, table, where = null}) {
                 totalItems,
                 totalPages,
                 currentPage: page + 1,
+                view: req.query.view,
+                filter: req.query.filter,
                 results: paginationItems
             };
 
@@ -57,7 +59,7 @@ function getSqlWhere(where, req) {
         if(value){
             return { [key]: value }
         }else{
-            throw err("values does not exist in request object", 500);
+            throw err("error parsing sql where", 500);
         }
     }
     return null;
