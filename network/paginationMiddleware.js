@@ -31,6 +31,9 @@ function paginationMiddleware({store, table, where = null}) {
                 currentPage: page + 1,
                 view: req.query.view,
                 filter: req.query.filter,
+                order,
+                orderBy,
+                where,
                 results: paginationItems
             };
 
