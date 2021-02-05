@@ -45,7 +45,7 @@ function handleConnection() {
 
 
 // mini utils
-const _concatenateQueries = (queryObj) => {
+const _concatenateQueries = (queryObj = {}) => {
     const keys = Object.keys(queryObj);
     let q = '';
 
@@ -139,12 +139,25 @@ async function queryWithAdvanceJoin(table, selectRows, query, join, toArray = tr
 }
 
 
-async function getCount(table, where = null) {
+async function getCount(table, where = null, haveRegex = false) {
     let q = `SELECT COUNT(id_${table}) AS dataCount FROM ${table}`;
     let data;
 
-    if(where){
-        q += ' WHERE ' + _concatenateQueries(where);
+    if (where) {
+        if (haveRegex) {
+            const [key, value] = Object.entries(where)[0];
+
+            q = `SELECT SUM(
+                CASE WHEN ${key} LIKE '%${value}%'
+                     THEN 1 
+                     ELSE 0 END
+                  ) AS dataCount 
+                FROM ${table}`
+        }
+        else {
+            q += ' WHERE ' + _concatenateQueries(where);
+        }
+
         data = await asyncDB.query(q);
     }
     else data = await asyncDB.query(q); 
@@ -153,15 +166,42 @@ async function getCount(table, where = null) {
 }
 
 
-async function getWithPagination({table, limit, orderBy, offset, order = 'ASC', where = null}) {
+async function getWithPagination({
+    table, 
+    limit, 
+    orderBy, 
+    offset, 
+    order = 'ASC', 
+    where = null,
+    haveRegex = false
+}) {
     let q = `SELECT * FROM ${table}`; 
     let q2 = ` ORDER BY ${orderBy} ${order} LIMIT ${limit} OFFSET ${offset}`;
     let data;
     
     if(where){
-        q += ' WHERE ' + _concatenateQueries(where) + q2;
-        data = await asyncDB.query(q);
+        if(haveRegex){
+            const entries = Object.entries(where);
+            
+            const [key, value] = entries[0];
+            let whereLike = ` WHERE ${key} LIKE '%${value}%'`;
+            
+            let filters = '';
+            // many filters
+            if(entries.length > 1){
+                // get plain object
+                const filtersObj = Object.fromEntries( entries.slice(1) );
+                whereLike += ' AND ' + _concatenateQueries(filtersObj);
+            }
+            
+            q+= whereLike + filters;
+        }
+        else {
+            q += ' WHERE ' + _concatenateQueries(where);
+        }
+        data = await asyncDB.query(q + q2);
     }
+    // query with no WHERE clause
     else data = await asyncDB.query(q + q2); 
 
     return data;

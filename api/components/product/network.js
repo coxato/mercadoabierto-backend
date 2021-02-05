@@ -11,7 +11,12 @@ const secureAction = require("./secure");
 router.get('/all', getAllProducts);
 router.get(
     '/category/:category', 
-    handleProductPagination, 
+    handleProductsCategories, 
+    getProductsWithPagination
+);
+router.get(
+    '/search', 
+    handleProductsBySearch, 
     getProductsWithPagination
 );
 
@@ -46,8 +51,7 @@ function getProductMedia(req, res, next) {
         .catch(next);
 }
 
-// just handle the request obj
-function handleProductPagination(req, res, next) {
+function handleProductsCategories(req, res, next) {
     const { category } = req.params;
     const { filter } = req.query;
     const _new = !filter ? undefined : filter === 'new' ? 1 : 0;
@@ -64,6 +68,24 @@ function handleProductPagination(req, res, next) {
                 }
     })(req, res, next);
 }
+
+
+function handleProductsBySearch(req, res, next) {
+    const { search, filter } = req.query;
+    const _new = !filter ? undefined : filter === 'new' ? 1 : 0;
+
+    paginationMiddleware({
+        store: controller.store,
+        table: controller.TABLE,
+        where: { 
+            title: search,
+            // expect a number 
+            ...( !isNaN(_new) && { new: _new }) 
+        },
+        haveRegex: true
+    })(req, res, next);
+}
+
 
 function getProductsWithPagination(req, res) {
     if(req.paginationResults){

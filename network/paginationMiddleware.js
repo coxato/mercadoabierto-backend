@@ -1,7 +1,7 @@
 const err = require("../utils/error");
 
 // express pagination middleware
-function paginationMiddleware({store, table, where = null}) {
+function paginationMiddleware({store, table, where = null, haveRegex = false}) {
     return async (req, res, next) => {
         try {
             
@@ -13,7 +13,7 @@ function paginationMiddleware({store, table, where = null}) {
             
             const sqlWhere = getSqlWhere(where, req);
             
-            const totalItems = await store.getCount(table, sqlWhere);
+            const totalItems = await store.getCount(table, sqlWhere, haveRegex);
             const totalPages = Math.ceil( totalItems / limit);
 
             const paginationItems = await store.getWithPagination({
@@ -22,9 +22,10 @@ function paginationMiddleware({store, table, where = null}) {
                 offset,
                 orderBy,
                 order,
-                where: sqlWhere
+                haveRegex,
+                where: sqlWhere,
             });
-            // save to request obj
+            // save to request object
             req.paginationResults = {
                 totalItems,
                 totalPages,
@@ -33,7 +34,7 @@ function paginationMiddleware({store, table, where = null}) {
                 filter: req.query.filter,
                 order,
                 orderBy,
-                where,
+                search: haveRegex ? Object.values(where)[0] : '',
                 results: paginationItems
             };
 
@@ -46,6 +47,12 @@ function paginationMiddleware({store, table, where = null}) {
     }
 }
 
+/**
+ * 
+ * @param {any} where object or string
+ * @param {object} req
+ * @returns {object} a plain object
+ */
 function getSqlWhere(where, req) {
     if(where){
         // it's like { category: something }
