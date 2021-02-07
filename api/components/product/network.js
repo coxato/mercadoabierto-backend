@@ -65,9 +65,11 @@ function handleProductsCategories(req, res, next) {
         store: controller.store,
         table: controller.TABLE,
         where: category === 'all' ? 
-                null : 
+                null 
+                : 
                 { 
                     category,
+                    avaliable: 1,
                     // expect a number 
                     ...( !isNaN(_new) && { new: _new }) 
                 }
@@ -84,6 +86,7 @@ function handleProductsBySearch(req, res, next) {
         table: controller.TABLE,
         where: { 
             title: search,
+            avaliable: 1,
             // expect a number 
             ...( !isNaN(_new) && { new: _new }) 
         },
@@ -96,7 +99,7 @@ function handleAutoCompleteSearch(req, res, next) {
     paginationMiddleware({
         store: controller.store,
         table: controller.TABLE,
-        where: { title: req.query.search },
+        where: { title: req.query.search, avaliable: 1 },
         haveRegex: true
     })(req, res, next);
 }

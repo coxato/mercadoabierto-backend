@@ -1,11 +1,32 @@
 const err = require("../../../utils/error");
-const { Purchase } = require("./model");
+const { nanoid } = require("nanoid");
 // controllers
 const userController = require("../user");
 const productController = require("../product");
 const cartController = require("../cart");
+// ***********************************************************
+// NOTE: I don't know why vercel can't find this file './model'
+// start a discussion in https://github.com/vercel/vercel/discussions/5799 
+// const model = require("./model")
+// ***********************************************************
 
 const TABLE = 'purchase';
+
+const getDateStr = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+}
+// model
+const Purchase = ({ id_user_buyer, id_user_seller, id_product, quantity }) => (
+    {
+        id_user_buyer,
+        id_user_seller,
+        id_product,
+        quantity,
+        id_purchase: nanoid(),
+        date: getDateStr(),
+    }
+);
 
 function purchaseController(injectedStore) {
     
