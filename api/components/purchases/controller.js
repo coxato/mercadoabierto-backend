@@ -1,5 +1,5 @@
 const err = require("../../../utils/error");
-const { Purchase } = require("./models");
+const { Purchase } = require("./model");
 // controllers
 const userController = require("../user");
 const productController = require("../product");
@@ -75,11 +75,10 @@ function purchaseController(injectedStore) {
 
     // ========= delete ==========
 
-    
 
     return {
         getUserPurchases,
-        makePurchase
+        makePurchase,
     }
     
 }
