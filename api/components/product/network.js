@@ -19,6 +19,11 @@ router.get(
     handleProductsBySearch, 
     getProductsWithPagination
 );
+router.get(
+    '/search-text-suggestions', 
+    handleAutoCompleteSearch, 
+    getAutoCompleteSuggestions
+);
 
 router.get('/:id', getProductById);
 router.get('/media/:id_album', getProductMedia);
@@ -84,6 +89,31 @@ function handleProductsBySearch(req, res, next) {
         },
         haveRegex: true
     })(req, res, next);
+}
+
+
+function handleAutoCompleteSearch(req, res, next) {
+    paginationMiddleware({
+        store: controller.store,
+        table: controller.TABLE,
+        where: { title: req.query.search },
+        haveRegex: true
+    })(req, res, next);
+}
+
+function getAutoCompleteSuggestions(req, res) {
+    if(req.paginationResults){
+        const results = req
+                .paginationResults
+                .results
+                .slice(0, req.query.maxSuggestions || 5)
+                .map( product => product.title );
+        
+        response.success(res, 200, results);
+    }
+    else{
+        response.error(res, new Error("error getting products suggestions"))
+    }
 }
 
 

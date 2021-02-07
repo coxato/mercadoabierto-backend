@@ -5,9 +5,10 @@ function paginationMiddleware({store, table, where = null, haveRegex = false}) {
     return async (req, res, next) => {
         try {
             
-            const page = parseInt(req.query.page) - 1,
-            limit = parseInt(req.query.limit);
-            const { orderBy, order } = req.query;
+            const page = parseInt(req.query.page || 1) - 1,
+            limit = parseInt(req.query.limit || 10),
+            orderBy = req.query.orderBy || 'date',
+            order = req.query.order || 'DESC';
 
             const offset = page > 0 ? page * limit : 0;
             
