@@ -6,9 +6,7 @@ const { api: { SECRET } } = require("../config");
 // ============== token functions =================
 
 function jwtSing(payload) {
-    return jwt.sign(payload, SECRET, {
-        expiresIn: "2d"
-    })
+    return jwt.sign(payload, SECRET);
 }
 
 
