@@ -12,8 +12,11 @@ function productController(injectedStore) {
     // ========== Read =========
 
     async function getAllProducts() {
-        const products = await store.list(TABLE);
-        return products;
+        return await store.list(TABLE);
+    }
+
+    async function getAllUserProducts(id_user) {
+        return await store.queryMultiple(TABLE, { id_user, avaliable: 1 }, true);
     }
 
     async function getProductById(id) {
@@ -90,6 +93,7 @@ function productController(injectedStore) {
     return {
         // GET
         getAllProducts,
+        getAllUserProducts,
         getProductById,
         getProductsByCategory,
         getProductMedia,

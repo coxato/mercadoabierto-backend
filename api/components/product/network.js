@@ -27,6 +27,7 @@ router.get(
 
 router.get('/:id', getProductById);
 router.get('/media/:id_album', getProductMedia);
+router.get('/user-products/:id_user', getUserProducts);
 
 
 router.post('/', secureAction('create'), checkBodySchema(productSchema), saveProduct);
@@ -127,6 +128,14 @@ function getProductsWithPagination(req, res) {
     else{
         response.error(res, new Error("error getting products with pagination"))
     }
+}
+
+function getUserProducts(req, res, next) {
+    const { id_user } = req.params;
+    
+    controller.getAllUserProducts(id_user)
+        .then( data => response.success(res, 200, data))
+        .catch(next);
 }
 
 // ===== POST =====

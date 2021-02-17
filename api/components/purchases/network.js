@@ -7,7 +7,7 @@ const checkBodySchema = require("../../../network/schemaValidator");
 const secureAction = require("./secure");
 
 // routes
-router.get('/:id', secureAction('get-purchases'), getUserPurchases);
+router.get('/:id_user', secureAction('get-purchases'), getUserPurchases);
 
 router.post(
     '/buy',

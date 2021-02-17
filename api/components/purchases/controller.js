@@ -6,6 +6,7 @@ const cartController = require("../cart");
 const { Purchase } = require("./model")
 
 const TABLE = 'purchase';
+const TABLE_PRODUCT = 'product';
 
 function purchaseController(injectedStore) {
     
@@ -17,7 +18,12 @@ function purchaseController(injectedStore) {
     // ========== Read =========
 
     async function getUserPurchases(id_user) {
-        
+        return await store.queryWithAdvanceJoin(
+            TABLE, // purchase
+            'purchase.*, title, price, cover', // SELECT
+            { id_user_buyer: id_user }, // query
+            { [TABLE_PRODUCT]: 'id_product' } // JOIN 
+        );
     }
 
     // ========== Create ==========
