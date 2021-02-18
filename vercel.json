@@ -28,6 +28,10 @@
         {
             "src": "/api/purchases(.*)",
             "dest": "/api/index.js"
+        },
+        {
+            "src": "/api/rewards(.*)",
+            "dest": "/api/index.js"
         }
     ]
 }

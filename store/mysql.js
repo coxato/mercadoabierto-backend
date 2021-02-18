@@ -207,6 +207,17 @@ async function getWithPagination({
     return data;
 }
 
+async function queryWithOrder(table, where, {
+    order = 'DESC',
+    orderBy = '',
+}) {
+    const q = `SELECT * FROM ${table} WHERE ? ORDER BY ${orderBy} ${order}`;
+
+    const data = await asyncDB.query(q, where);
+    
+    return data;
+}
+
 // ===== insert =====
 
 async function insert(table, data){
@@ -255,6 +266,7 @@ module.exports = {
     query,
     queryMultiple,
     queryWithAdvanceJoin,
+    queryWithOrder,
     getCount,
     getWithPagination,
     insert,
