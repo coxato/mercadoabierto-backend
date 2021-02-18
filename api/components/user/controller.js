@@ -44,7 +44,7 @@ function userController(injectedStore) {
         const user = await store.getValuesFrom(
             TABLE, 
             { id_user }, 
-            ['id_user', 'username', 'photo_url', 'first_name', 'money']
+            ['id_user', 'username', 'photo_url', 'first_name', 'last_name', 'money']
         );
 
         if(!user) return null;
