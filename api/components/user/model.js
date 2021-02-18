@@ -10,8 +10,8 @@ const User = (body) => {
         money: 1000.00,
         first_name,
         last_name,
-        username: username.trim(),
-        email: email.trim(),
+        username: username.trim().toLowerCase(),
+        email: email.trim().toLowerCase(),
     }
 }
 
