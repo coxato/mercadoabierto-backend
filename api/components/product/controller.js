@@ -113,7 +113,7 @@ function productController(injectedStore) {
         removeProductMedia,
         // misc
         store,
-        PRODUCT_TABLE
+        TABLE: PRODUCT_TABLE
     }
     
 }
