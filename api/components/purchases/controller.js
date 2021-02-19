@@ -29,6 +29,9 @@ function purchaseController(injectedStore) {
     // ========== Create ==========
 
     function _simpleValidation({ buyer, product, seller, quantity}) {
+        console.log(
+            { buyer, product, seller, quantity}
+        );
         if(!buyer || !seller || !product.productData) throw err('buyer or seller or product does not exists', 404);
 
         if(product.productData.quantity < quantity) throw err('not enough product items', 400);
@@ -48,9 +51,9 @@ function purchaseController(injectedStore) {
         const { id_product, id_user_buyer, quantity } = body;
 
         // get data from buyer and product
-        const buyer = await userController.getUserById(id_user_buyer);
+        const buyer = await userController.getUserById(id_user_buyer, true);
         const product = await productController.getProductById(id_product);
-        const seller = await userController.getUserById(product.productData.id_user);
+        const seller = await userController.getUserById(product.productData.id_user, true);
 
         _simpleValidation({ buyer, seller, product, quantity });
 
