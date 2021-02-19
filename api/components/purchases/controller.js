@@ -4,9 +4,10 @@ const userController = require("../user");
 const productController = require("../product");
 const cartController = require("../cart");
 const { Purchase } = require("./model")
-
-const TABLE = 'purchase';
-const TABLE_PRODUCT = 'product';
+const { 
+    PURCHASE_TABLE, 
+    PRODUCT_TABLE 
+} = require("../../../store/constants");
 
 function purchaseController(injectedStore) {
     
@@ -19,10 +20,10 @@ function purchaseController(injectedStore) {
 
     async function getUserPurchases(id_user) {
         return await store.queryWithAdvanceJoin(
-            TABLE, // purchase
+            PURCHASE_TABLE, // purchase
             'purchase.*, title, price, cover', // SELECT
             { id_user_buyer: id_user }, // query
-            { [TABLE_PRODUCT]: 'id_product' } // JOIN 
+            { [PRODUCT_TABLE]: 'id_product' } // JOIN 
         );
     }
 
@@ -78,7 +79,7 @@ function purchaseController(injectedStore) {
         await cartController.deleteItem({ id_user: id_user_buyer, id_product });
         
         // and finally save purchase in db
-        await store.insert(TABLE, Purchase({ ...body, id_user_seller: seller.id_user }));
+        await store.insert(PURCHASE_TABLE, Purchase({ ...body, id_user_seller: seller.id_user }));
     }
     
 

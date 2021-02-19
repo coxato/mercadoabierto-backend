@@ -1,6 +1,6 @@
 const err = require("../../../utils/error");
 const auth = require("../../../auth");
-const TABLE = 'auth';
+const { AUTH_TABLE } = require("../../../store/constants");
 
 function authController(injectedStore) {
     
@@ -15,7 +15,7 @@ function authController(injectedStore) {
 
         const encryptPassword = await auth.encrypt(password);
 
-        return await store.insert(TABLE, { 
+        return await store.insert(AUTH_TABLE, { 
             id_user, 
             username, 
             email, 

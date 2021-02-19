@@ -1,6 +1,8 @@
 const err = require("../../../utils/error");
-const TABLE = 'cart';
-const TABLE_PRODUCT = 'product';
+const { 
+    CART_TABLE, 
+    PRODUCT_TABLE 
+} = require("../../../store/constants");
 
 function cartController(injectedStore) {
     
@@ -13,10 +15,10 @@ function cartController(injectedStore) {
     async function getUserItems(id_user) {
         // SELECT cart.*, cover, price, title FROM cart JOIN product ON cart.id_product=product.id_product WHERE cart.id_user='someIdUser'
         const items = await store.queryWithAdvanceJoin(
-            TABLE, // cart
+            CART_TABLE, // cart
             'cart.*, title, price, cover', // SELECT
             { id_user }, // query
-            { [TABLE_PRODUCT]: 'id_product' } // JOIN 
+            { [PRODUCT_TABLE]: 'id_product' } // JOIN 
         );
 
         if(!items) return null;
@@ -25,7 +27,7 @@ function cartController(injectedStore) {
     }
 
     async function _getCartItem({ id_user, id_product }) {
-        return await store.queryMultiple(TABLE, { id_user, id_product });
+        return await store.queryMultiple(CART_TABLE, { id_user, id_product });
     }
 
 
@@ -37,7 +39,7 @@ function cartController(injectedStore) {
         const user = await store.query("user", { id_user });
 
         const product = await store.getValuesFrom(
-            TABLE_PRODUCT,
+            PRODUCT_TABLE,
             {id_product},
             ['id_product', 'price', 'cover', 'title']
         );
@@ -56,12 +58,12 @@ function cartController(injectedStore) {
 
         // add to cart
         if(!item){
-            await store.insert(TABLE, body);
+            await store.insert(CART_TABLE, body);
         }
         // sum quantity if exists
         else{
             await store.updateBy(
-                TABLE, 
+                CART_TABLE, 
                 { id_user, id_product },
                 { quantity: item.quantity + quantity }    
             )
@@ -87,7 +89,7 @@ function cartController(injectedStore) {
             }
 
             await store.updateBy(
-                TABLE, 
+                CART_TABLE, 
                 { id_user, id_product },
                 { quantity: qtyToUpdate }   
             );
@@ -103,7 +105,7 @@ function cartController(injectedStore) {
     async function deleteItem(body) {
         const { id_user, id_product } = body;
 
-        await store.removeByMultiple(TABLE, { id_user, id_product });
+        await store.removeByMultiple(CART_TABLE, { id_user, id_product });
         
         return true;
     }

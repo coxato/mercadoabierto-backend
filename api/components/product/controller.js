@@ -1,6 +1,11 @@
 const err = require("../../../utils/error");
 const { Product, ProductMedia } = require("./models");
-const TABLE = 'product';
+const { 
+    PRODUCT_TABLE,
+    PRODUCT_MEDIA_TABLE,
+    USER_TABLE
+} = require("../../../store/constants");
+const PRODUCT_TABLE = 'product';
 
 function productController(injectedStore) {
     
@@ -12,15 +17,15 @@ function productController(injectedStore) {
     // ========== Read =========
 
     async function getAllProducts() {
-        return await store.list(TABLE);
+        return await store.list(PRODUCT_TABLE);
     }
 
-    async function getAllUserProducts(id_user) {
-        return await store.queryMultiple(TABLE, { id_user, avaliable: 1 }, true);
+    async function getAllUserProducts(username) {
+        return await store.query(USER_TABLE, { id_user, avaliable: 1 });
     }
 
     async function getProductById(id) {
-        const product = await store.query(TABLE, { id_product: id });
+        const product = await store.query(PRODUCT_TABLE, { id_product: id });
         // if(!product) throw err("the product with id " + id + " does not exist", 404);
         if(!product){
             return {
@@ -30,7 +35,7 @@ function productController(injectedStore) {
         }
 
         const photos = await store.query(
-            TABLE+'_media', 
+            PRODUCT_MEDIA_TABLE, 
             { id_album: product.id_album }, 
             null, 
             true
@@ -50,13 +55,13 @@ function productController(injectedStore) {
     }
 
     async function getProductsByCategory(category, sortBy = null) {
-        const products = await store.query(TABLE, { category }, null, true);
+        const products = await store.query(PRODUCT_TABLE, { category }, null, true);
         return products;
     }
  
     
     async function getProductMedia(id_album) {
-        const media = await store.query(TABLE+'_media', { id_album }, null, true);
+        const media = await store.query(PRODUCT_MEDIA_TABLE, { id_album }, null, true);
         return media;
     }
 
@@ -65,13 +70,13 @@ function productController(injectedStore) {
     async function saveProductMedia(body, id_user) {
         const media = ProductMedia(body, id_user);
 
-        await store.insert(TABLE+'_media', media);
+        await store.insert(PRODUCT_MEDIA_TABLE, media);
         return 'product media saved';
     }
 
     async function saveProduct(body, id_user, username) {
         const product = Product(body, id_user);
-        await store.insert(TABLE, product);
+        await store.insert(PRODUCT_TABLE, product);
         return {
             ...product, 
             username
@@ -80,13 +85,13 @@ function productController(injectedStore) {
 
     // ================ update ==============
     async function updateProduct(id_product, propsObj) {
-        return await store.update(TABLE, id_product, propsObj);
+        return await store.update(PRODUCT_TABLE, id_product, propsObj);
     }
 
     // ========= delete ==========
 
     async function removeProductMedia(photo_fullname) {
-        await store.removeBy(TABLE+'_media', { photo_fullname });
+        await store.removeBy(PRODUCT_MEDIA_TABLE, { photo_fullname });
         return 'product media removed';
     }
 
@@ -106,7 +111,7 @@ function productController(injectedStore) {
         removeProductMedia,
         // misc
         store,
-        TABLE
+        PRODUCT_TABLE
     }
     
 }

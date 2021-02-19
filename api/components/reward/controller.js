@@ -1,7 +1,8 @@
 const err = require("../../../utils/error");
-
-const TABLE = 'reward';
-const USER_TABLE = 'user';
+const { 
+    REWARD_TABLE, 
+    USER_TABLE 
+} = require("../../../store/constants");
 const REWARD = 200;
 
 function moneyController(injectedStore) {
@@ -12,7 +13,7 @@ function moneyController(injectedStore) {
     else store = require("../../../store/dummyDB");
 
     async function checkReward(id_user) {
-        const [ lastReward ] = await store.queryWithOrder(TABLE, { id_user }, { orderBy: 'order_number' });
+        const [ lastReward ] = await store.queryWithOrder(REWARD_TABLE, { id_user }, { orderBy: 'order_number' });
 
         if(lastReward){
             const lastRewardDate = parseInt(lastReward.date_miliseconds),
@@ -54,7 +55,7 @@ function moneyController(injectedStore) {
             await store.update(USER_TABLE, id_user, { money });
 
             // save reward register
-            await store.insert(TABLE, { 
+            await store.insert(REWARD_TABLE, { 
                 id_user,
                 date_miliseconds: +new Date(),
                 reward_ammount: REWARD  
