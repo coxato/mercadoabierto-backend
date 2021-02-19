@@ -11,6 +11,7 @@ router.get('/', getAllUsers);
 router.get('/logged-info', secureAction('get-info'), getUserLoggedInfo);
 router.get('/money/:id', secureAction('get-money'), getUserMoney);
 router.get('/check-avaliable/', checkAvaliable);
+router.get('/:username', getUserByUsername);
 // router.get('/:id', getUserById);
 
 router.post('/', checkBodySchema(userSchema), createUser);
@@ -23,7 +24,13 @@ function getAllUsers(req, res, next) {
 }
 
 function getUserLoggedInfo(req, res, next) {
-    controller.getUserById(req.user.id_user)
+    controller.getUserById(req.user.id_user, true)
+        .then( data => response.success(res, 200, data) )
+        .catch(next);
+}
+
+function getUserByUsername(req, res, next) {
+    controller.getUserByUsername(req.params.username)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }

@@ -39,17 +39,32 @@ function userController(injectedStore) {
         return users;
     }
 
+    async function _getUser(where, privateInfo = false) {
+        let user;
 
-    async function getUserById(id_user) {
-        const user = await store.getValuesFrom(
-            TABLE, 
-            { id_user }, 
-            ['id_user', 'username', 'photo_url', 'first_name', 'last_name', 'money']
-        );
+        if(privateInfo){
+            user = await store.query(TABLE, where);
+        }else{
+            user = await store.getValuesFrom(
+                TABLE, 
+                where, 
+                ['username', 'photo_url', 'first_name', 'last_name']
+            );
+        }
 
         if(!user) return null;
 
         return user;
+    }
+
+
+    async function getUserById(id_user, privateInfo = false) {
+        return await _getUser({ id_user }, privateInfo);
+    }
+
+    async function getUserByUsername(username) {
+        username = username.toLowerCase();
+        return await _getUser({ username });
     }
 
     async function getUserMoney(id_user) {
@@ -82,6 +97,7 @@ function userController(injectedStore) {
     return {
         getAllUsers,
         getUserById,
+        getUserByUsername,
         getUserMoney,
         createUser,
         isAvaliable,
