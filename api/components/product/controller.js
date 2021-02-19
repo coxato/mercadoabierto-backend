@@ -5,7 +5,6 @@ const {
     PRODUCT_MEDIA_TABLE,
     USER_TABLE
 } = require("../../../store/constants");
-const PRODUCT_TABLE = 'product';
 
 function productController(injectedStore) {
     
@@ -21,7 +20,10 @@ function productController(injectedStore) {
     }
 
     async function getAllUserProducts(username) {
-        return await store.query(USER_TABLE, { id_user, avaliable: 1 });
+        const { id_user } = await store.query(USER_TABLE, { username });
+        const userProducts = await store.query(PRODUCT_TABLE, { id_user }, null, true);
+
+        return userProducts;
     }
 
     async function getProductById(id) {

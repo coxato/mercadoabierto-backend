@@ -8,7 +8,7 @@ const paginationMiddleware = require("../../../network/paginationMiddleware");
 const secureAction = require("./secure");
 
 // routes
-router.get('/all', getAllProducts);
+// router.get('/all', getAllProducts);
 router.get(
     '/category/:category', 
     handleProductsCategories, 
@@ -27,8 +27,7 @@ router.get(
 
 router.get('/:id', getProductById);
 router.get('/media/:id_album', getProductMedia);
-router.get('/user-products/:id_user', getUserProducts);
-
+router.get('/user-products/:username', getUserProducts);
 
 router.post('/', secureAction('create'), checkBodySchema(productSchema), saveProduct);
 router.post('/media', secureAction('media'), checkBodySchema(photoSchema), saveMedia);
@@ -39,11 +38,11 @@ router.delete('/media/:photo_fullname', secureAction('media'), removeMedia);
 
 // ===== GET ===== 
 
-function getAllProducts(req, res, next) {
-    controller.getAllProducts()
-        .then( data => response.success(res, 200, data) )
-        .catch(next);
-}
+// function getAllProducts(req, res, next) {
+//     controller.getAllProducts()
+//         .then( data => response.success(res, 200, data) )
+//         .catch(next);
+// }
 
 function getProductById(req, res, next) {
     controller.getProductById(req.params.id)
@@ -131,9 +130,9 @@ function getProductsWithPagination(req, res) {
 }
 
 function getUserProducts(req, res, next) {
-    const { id_user } = req.params;
+    const { username } = req.params;
     
-    controller.getAllUserProducts(id_user)
+    controller.getAllUserProducts(username)
         .then( data => response.success(res, 200, data))
         .catch(next);
 }
