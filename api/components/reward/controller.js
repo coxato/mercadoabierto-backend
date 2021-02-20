@@ -61,7 +61,10 @@ function moneyController(injectedStore) {
                 reward_ammount: REWARD  
             })
 
-            return;
+            return {
+                isOneDayOld,
+                howMuchLeft
+            };
         }
         else{
             throw err(`Sorry, you need to wait ${howMuchLeft.hours}:${howMuchLeft.minutes}`)
