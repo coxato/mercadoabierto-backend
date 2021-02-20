@@ -25,8 +25,8 @@ function authController(injectedStore) {
 
 
     async function login({username_or_email, password}){
-        const usernameExist = await store.query(TABLE, { username: username_or_email });
-        const emailExist = await store.query(TABLE, { email: username_or_email });
+        const usernameExist = await store.query(AUTH_TABLE, { username: username_or_email });
+        const emailExist = await store.query(AUTH_TABLE, { email: username_or_email });
         const user = usernameExist || emailExist;
         const searchedBy = /\w+@\w{2,8}\.\w{2,5}\b/.test(username_or_email) ? 'email' : 'username';
 
