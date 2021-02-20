@@ -38,9 +38,10 @@ function moneyController(injectedStore) {
         return {
             isOneDayOld: true,
             howMuchLeft: {
-                hours: 0,
-                minutes: 0
-            }
+                hours: 23,
+                minutes: 59
+            },
+            isFirstTime: true
         }
     }
 

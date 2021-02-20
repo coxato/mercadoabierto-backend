@@ -17,7 +17,7 @@ function checkReward(req, res, next) {
 
 function giveReward(req, res, next) {
     controller.giveReward(req.user.id_user)
-        .then( () => response.success(res, 200, 'reward given') )
+        .then( data => response.success(res, 200, data) )
         .catch(next);
 }
 
