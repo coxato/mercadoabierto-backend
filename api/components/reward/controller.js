@@ -63,7 +63,7 @@ function moneyController(injectedStore) {
             })
 
             return {
-                isOneDayOld,
+                isOneDayOld: false, // always set to false, because reward was given right now
                 howMuchLeft
             };
         }
