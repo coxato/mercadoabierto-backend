@@ -8,7 +8,6 @@ const paginationMiddleware = require("../../../network/paginationMiddleware");
 const secureAction = require("./secure");
 
 // routes
-// router.get('/all', getAllProducts);
 router.get(
     '/category/:category', 
     handleProductsCategories, 
@@ -32,17 +31,14 @@ router.get('/user-products/:username', getUserProducts);
 router.post('/', secureAction('create'), checkBodySchema(productSchema), saveProduct);
 router.post('/media', secureAction('media'), checkBodySchema(photoSchema), saveMedia);
 
+// id_product and id_user in the query object
+router.put('/update', secureAction('update'), checkBodySchema(productSchema), updateProduct);
+
 router.delete('/media/:photo_fullname', secureAction('media'), removeMedia);
 
 // routes handlers
 
 // ===== GET ===== 
-
-// function getAllProducts(req, res, next) {
-//     controller.getAllProducts()
-//         .then( data => response.success(res, 200, data) )
-//         .catch(next);
-// }
 
 function getProductById(req, res, next) {
     controller.getProductById(req.params.id)
@@ -141,7 +137,7 @@ function getUserProducts(req, res, next) {
 
 function saveProduct(req, res, next) {
     // req.user.id_user becomes from secure middleware
-    controller.saveProduct(req.body, req.user.id_user, req.user.username)
+    controller.saveProduct(req.body, req.user.id_user)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }
@@ -149,6 +145,13 @@ function saveProduct(req, res, next) {
 function saveMedia(req, res, next) {
     // req.user.id_user becomes from secure middleware
     controller.saveProductMedia(req.body, req.user.id_user)
+        .then( data => response.success(res, 200, data) )
+        .catch(next);
+}
+
+// ===== UPDATE =====
+function updateProduct(req, res, next) {
+    controller.updateProduct(req.query.id_product, req.body)
         .then( data => response.success(res, 200, data) )
         .catch(next);
 }

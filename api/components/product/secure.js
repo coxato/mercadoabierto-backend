@@ -14,6 +14,11 @@ function secureProductAction(action) {
                 check.logged(req);
                 next();
                 break;
+
+            case 'update':
+                check.isOwner(req, req.query.id_user);
+                next();
+                break;
         
             // TODO: 
             // compare user token 

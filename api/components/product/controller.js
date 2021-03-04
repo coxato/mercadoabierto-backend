@@ -44,7 +44,7 @@ function productController(injectedStore) {
         );
 
         const sellerData = await store.getValuesFrom(
-            'user',
+            USER_TABLE,
             {id_user: product.id_user},
             ['id_user', 'username', 'photo_url']    
         )
@@ -76,18 +76,16 @@ function productController(injectedStore) {
         return 'product media saved';
     }
 
-    async function saveProduct(body, id_user, username) {
+    async function saveProduct(body, id_user) {
         const product = Product(body, id_user);
         await store.insert(PRODUCT_TABLE, product);
-        return {
-            ...product, 
-            username
-        };
+        return product;
     }
 
     // ================ update ==============
     async function updateProduct(id_product, propsObj) {
-        return await store.update(PRODUCT_TABLE, id_product, propsObj);
+        await store.update(PRODUCT_TABLE, id_product, propsObj);
+        return await store.query(PRODUCT_TABLE, { id_product });
     }
 
     // ========= delete ==========
