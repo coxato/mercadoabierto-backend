@@ -41,7 +41,7 @@ function cartController(injectedStore) {
         const product = await store.getValuesFrom(
             PRODUCT_TABLE,
             {id_product},
-            ['id_product', 'price', 'cover', 'title']
+            ['id_product', 'price', 'cover', 'title', 'quantity']
         );
 
         const item = await _getCartItem(body);
@@ -53,6 +53,11 @@ function cartController(injectedStore) {
 
         // do not add if not enough money
         if(product.price * quantity > user.money){
+            return null;
+        }
+
+        // do not have enough quantity
+        if(product.quantity < quantity){
             return null;
         }
 
